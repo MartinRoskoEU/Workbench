@@ -17,10 +17,38 @@ local function createFrame(self)
         UIParent,
         "DefaultPanelFlatTemplate"
     )
-
-    frame:SetSize(900, 600)
+    
+    frame:SetSize(920, 720)
     frame:SetPoint("CENTER")
+    frame:SetMovable(true)
+    frame:SetClampedToScreen(true)
+    frame:EnableMouse(true)
+    frame:SetFrameStrata("FULLSCREEN_DIALOG")
+
+    local closeButton = CreateFrame(
+        "Button",
+        nil,
+        frame,
+        "UIPanelCloseButton"
+    )
+
+    closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0)
+    closeButton:SetScript("OnClick", function ()
+        self:Hide()     
+    end)
+
     frame.TitleContainer.TitleText:SetText("Workbench")
+    frame.TitleContainer:EnableMouse(true)
+    frame.TitleContainer:RegisterForDrag("LeftButton")
+
+    frame.TitleContainer:SetScript("OnDragStart", function ()
+        frame:StartMoving()        
+    end)
+
+    frame.TitleContainer:SetScript("OnDragStop", function ()
+        frame:StopMovingOrSizing()        
+    end)
+
     frame:Hide()
 
     self.frame = frame
@@ -41,19 +69,19 @@ function MainWindow.new()
 
 end
 
-function MainWindow:show()
+function MainWindow:Show()
     self.frame:Show()
 end
 
-function MainWindow:hide()
+function MainWindow:Hide()
     self.frame:Hide()
 end
 
-function MainWindow:toggle()
+function MainWindow:Toggle()
     if self.frame:IsShown() then
-        self:hide()
+        self:Hide()
     else
-        self:show()
+        self:Show()
     end
 end
 

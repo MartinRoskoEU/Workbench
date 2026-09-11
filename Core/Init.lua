@@ -7,7 +7,7 @@ local loaded = false
 function Workbench_OnAddonCompartmentClick(addonName, buttonName)
 
     if not loaded then return end
-    Workbench.UI.MainWindow:toggle()
+    Workbench.UI.MainWindow:Toggle()
     
 end
 
