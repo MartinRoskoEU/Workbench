@@ -2,8 +2,21 @@ local addonName, Workbench = ...
 
 Workbench.AddonName = addonName
 
-function Workbench:Initialize()
-    -- Singleton modules will be initialized here later.
+local loaded = false
+
+function Workbench_OnAddonCompartmentClick(addonName, buttonName)
+
+    if not loaded then return end
+    Workbench.UI.MainWindow:toggle()
+    
 end
 
-Workbench:Initialize()
+local function Initialize()
+    
+    Workbench.UI.MainWindow = Workbench.Classes.MainWindow.new()
+
+    loaded = true
+
+end
+
+Initialize()
