@@ -1,0 +1,7 @@
+## Interface: 120100
+## Title: Workbench
+## Notes: A World of Warcraft Retail addon for addon development, debugging, and in-game testing.
+## Author: Nendis
+## Version: 0.1.0
+
+Core\Init.lua

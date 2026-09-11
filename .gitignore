@@ -1,0 +1,18 @@
+# Editor
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Release / build output
+dist/
+release/
+*.zip
+
+# Temporary files
+*.tmp
+*.log
+*~
