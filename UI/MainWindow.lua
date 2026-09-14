@@ -139,25 +139,17 @@ local function createLayout(self)
 
 end
 
-local function createContent(self)
+local function createPages(self)
 
-    local title = self.contentPanel:CreateFontString(
-        nil,
-        "ARTWORK",
-        "GameFontHighlightHuge"
+    self.pages = {}
+
+    self.pages.console = Workbench.Classes.Console.New(
+        self.contentPanel
     )
 
-    title:SetPoint(
-        "TOPLEFT",
-        self.contentPanel,
-        "TOPLEFT",
-        20,
-        -20
+    self.pages.tools = Workbench.Classes.Tools.New(
+        self.contentPanel
     )
-
-    title:SetText("")
-
-    self.contentTitle = title
 
 end
 
@@ -165,8 +157,8 @@ local function createSidebar(self)
 
     self.sidebar = Workbench.Classes.Sidebar.New(
         self.navigationPanel,
-        function(itemName)
-            self.contentTitle:SetText(itemName)
+        function(itemId)
+            self:ShowPage(itemId)
         end
     )
 
@@ -182,10 +174,28 @@ function MainWindow.new()
 
     createFrame(instance)
     createLayout(instance)
-    createContent(instance)
+    createPages(instance)
     createSidebar(instance)
 
     return instance
+
+end
+
+function MainWindow:ShowPage(pageId)
+
+    local page = self.pages[pageId]
+
+    if not page then
+        return
+    end
+
+    if self.activePage then
+        self.activePage:Hide()
+    end
+
+    page:Show()
+
+    self.activePage = page
 
 end
 

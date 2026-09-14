@@ -8,7 +8,14 @@
 
 Core\Namespace.lua
 
+UI\Page.lua
+
+UI\ConsoleInput.lua
+UI\ConsoleOutput.lua
+UI\Console.lua
+
 UI\Sidebar.lua
+UI\Tools.lua
 UI\MainWindow.lua
 
 Core\Init.lua

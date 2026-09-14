@@ -45,7 +45,7 @@ local function createHeader(self, text, index)
 
 end
 
-local function createItem(self, text, previous)
+local function createItem(self, id, text, previous)
 
     local button = CreateFrame(
         "Button",
@@ -68,8 +68,14 @@ local function createItem(self, text, previous)
         "BACKGROUND"
     )
 
-    activeTexture:SetPoint("CENTER", button, "CENTER", 10, 0)
     activeTexture:SetAtlas("Options_List_Active", true)
+    activeTexture:SetPoint(
+        "CENTER",
+        button,
+        "CENTER",
+        10,
+        0
+    )
     activeTexture:Hide()
 
     local hoverTexture = button:CreateTexture(
@@ -77,8 +83,14 @@ local function createItem(self, text, previous)
         "BACKGROUND"
     )
 
-    hoverTexture:SetPoint("CENTER", button, "CENTER", 10, 0)
     hoverTexture:SetAtlas("Options_List_Hover", true)
+    hoverTexture:SetPoint(
+        "CENTER",
+        button,
+        "CENTER",
+        10,
+        0
+    )
     hoverTexture:Hide()
 
     local label = button:CreateFontString(
@@ -106,10 +118,10 @@ local function createItem(self, text, previous)
     label:SetJustifyH("LEFT")
     label:SetText(text)
 
-    button.itemName = text
+    button.id = id
+    button.label = label
     button.activeTexture = activeTexture
     button.hoverTexture = hoverTexture
-    button.label = label
     button.selected = false
 
     button:SetScript("OnEnter", function(button)
@@ -121,45 +133,14 @@ local function createItem(self, text, previous)
     end)
 
     button:SetScript("OnLeave", function(button)
-
         button.hoverTexture:Hide()
-
     end)
 
     button:SetScript("OnClick", function(button)
-
         self:SelectItem(button)
-
     end)
 
     return button
-
-end
-
-function Sidebar:SelectItem(button)
-
-    if self.selectedButton == button then
-        return
-    end
-
-    if self.selectedButton then
-
-        self.selectedButton.selected = false
-        self.selectedButton.activeTexture:Hide()
-        self.selectedButton.label:SetFontObject(GameFontNormal)
-
-    end
-
-    self.selectedButton = button
-
-    button.selected = true
-    button.hoverTexture:Hide()
-    button.activeTexture:Show()
-    button.label:SetFontObject(GameFontHighlight)
-
-    if self.onSelect then
-        self.onSelect(button.itemName)
-    end
 
 end
 
@@ -179,12 +160,14 @@ function Sidebar.New(parent, onSelect)
 
     self.consoleButton = createItem(
         self,
+        "console",
         "Console",
         self.developmentHeader
     )
 
     self.toolsButton = createItem(
         self,
+        "tools",
         "Tools",
         self.consoleButton
     )
@@ -192,6 +175,31 @@ function Sidebar.New(parent, onSelect)
     self:SelectItem(self.consoleButton)
 
     return self
+
+end
+
+function Sidebar:SelectItem(button)
+
+    if self.selectedButton == button then
+        return
+    end
+
+    if self.selectedButton then
+        self.selectedButton.selected = false
+        self.selectedButton.activeTexture:Hide()
+        self.selectedButton.label:SetFontObject(GameFontNormal)
+    end
+
+    self.selectedButton = button
+
+    button.selected = true
+    button.hoverTexture:Hide()
+    button.activeTexture:Show()
+    button.label:SetFontObject(GameFontHighlight)
+
+    if self.onSelect then
+        self.onSelect(button.id)
+    end
 
 end
 
