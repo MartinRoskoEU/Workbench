@@ -8,6 +8,7 @@
 
 Core\Namespace.lua
 
+UI\Sidebar.lua
 UI\MainWindow.lua
 
 Core\Init.lua

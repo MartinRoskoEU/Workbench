@@ -7,9 +7,6 @@ MainWindow.__index = MainWindow
 local instance
 
 local function createFrame(self)
-    if self.frame then
-        return self.frame
-    end
 
     local frame = CreateFrame(
         "Frame",
@@ -17,8 +14,8 @@ local function createFrame(self)
         UIParent,
         "DefaultPanelFlatTemplate"
     )
-    
-    frame:SetSize(920, 720)
+
+    frame:SetSize(920, 724)
     frame:SetPoint("CENTER")
     frame:SetMovable(true)
     frame:SetClampedToScreen(true)
@@ -32,28 +29,147 @@ local function createFrame(self)
         "UIPanelCloseButton"
     )
 
-    closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, 0)
-    closeButton:SetScript("OnClick", function ()
-        self:Hide()     
+    closeButton:SetPoint(
+        "TOPRIGHT",
+        frame,
+        "TOPRIGHT",
+        0,
+        0
+    )
+
+    closeButton:SetScript("OnClick", function()
+        self:Hide()
     end)
 
     frame.TitleContainer.TitleText:SetText("Workbench")
+
     frame.TitleContainer:EnableMouse(true)
     frame.TitleContainer:RegisterForDrag("LeftButton")
 
-    frame.TitleContainer:SetScript("OnDragStart", function ()
-        frame:StartMoving()        
+    frame.TitleContainer:SetScript("OnDragStart", function()
+        frame:StartMoving()
     end)
 
-    frame.TitleContainer:SetScript("OnDragStop", function ()
-        frame:StopMovingOrSizing()        
+    frame.TitleContainer:SetScript("OnDragStop", function()
+        frame:StopMovingOrSizing()
     end)
 
     frame:Hide()
 
     self.frame = frame
 
-    return frame
+end
+
+local function createLayout(self)
+
+    local innerFrame = self.frame:CreateTexture(
+        nil,
+        "OVERLAY",
+        nil,
+        2
+    )
+
+    innerFrame:SetAtlas("Options_InnerFrame", true)
+
+    innerFrame:SetPoint(
+        "TOPLEFT",
+        self.frame,
+        "TOPLEFT",
+        17,
+        -64
+    )
+
+    local navigationPanel = CreateFrame(
+        "Frame",
+        nil,
+        self.frame
+    )
+
+    navigationPanel:SetPoint(
+        "TOPLEFT",
+        self.frame,
+        "TOPLEFT",
+        18,
+        -76
+    )
+
+    navigationPanel:SetPoint(
+        "BOTTOMLEFT",
+        self.frame,
+        "BOTTOMLEFT",
+        18,
+        46
+    )
+
+    navigationPanel:SetWidth(199)
+
+    local contentPanel = CreateFrame(
+        "Frame",
+        nil,
+        self.frame
+    )
+
+    contentPanel:SetPoint(
+        "TOPLEFT",
+        navigationPanel,
+        "TOPRIGHT",
+        16,
+        0
+    )
+
+    contentPanel:SetPoint(
+        "BOTTOMLEFT",
+        navigationPanel,
+        "BOTTOMRIGHT",
+        16,
+        1
+    )
+
+    contentPanel:SetPoint(
+        "RIGHT",
+        self.frame,
+        "RIGHT",
+        -22,
+        0
+    )
+
+    self.innerFrame = innerFrame
+    self.navigationPanel = navigationPanel
+    self.contentPanel = contentPanel
+
+end
+
+local function createContent(self)
+
+    local title = self.contentPanel:CreateFontString(
+        nil,
+        "ARTWORK",
+        "GameFontHighlightHuge"
+    )
+
+    title:SetPoint(
+        "TOPLEFT",
+        self.contentPanel,
+        "TOPLEFT",
+        20,
+        -20
+    )
+
+    title:SetText("")
+
+    self.contentTitle = title
+
+end
+
+local function createSidebar(self)
+
+    self.sidebar = Workbench.Classes.Sidebar.New(
+        self.navigationPanel,
+        function(itemName)
+            self.contentTitle:SetText(itemName)
+        end
+    )
+
 end
 
 function MainWindow.new()
@@ -61,9 +177,13 @@ function MainWindow.new()
     if instance then
         return instance
     end
-    
-    instance = setmetatable({}, MainWindow)    
+
+    instance = setmetatable({}, MainWindow)
+
     createFrame(instance)
+    createLayout(instance)
+    createContent(instance)
+    createSidebar(instance)
 
     return instance
 
@@ -78,11 +198,13 @@ function MainWindow:Hide()
 end
 
 function MainWindow:Toggle()
+
     if self.frame:IsShown() then
         self:Hide()
     else
         self:Show()
     end
+
 end
 
 Workbench.Classes.MainWindow = MainWindow
